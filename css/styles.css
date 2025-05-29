@@ -119,7 +119,7 @@ main {
     background-color: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra mais suave e moderna */
     width: 100%;
     max-width: 450px; /* Largura máxima para o card de login */
     text-align: center;
@@ -188,7 +188,7 @@ main {
 
 .habits-container {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: auto; /* Permite rolagem horizontal para a tabela */
     margin-bottom: 30px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -198,23 +198,23 @@ main {
 #habits-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 700px;
+    min-width: 700px; /* Garante que a tabela não fique muito pequena */
 }
 
 #habits-table th, #habits-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-    white-space: nowrap;
+    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
 }
 
 #habits-table thead th {
     background-color: #4CAF50;
     color: white;
     font-weight: bold;
-    position: sticky;
+    position: sticky; /* Mantém o cabeçalho "fixo" na rolagem horizontal */
     top: 0;
-    z-index: 2;
+    z-index: 2; /* Garante que o cabeçalho esteja acima das células */
 }
 
 #habits-table tbody tr:nth-child(even) {
@@ -225,34 +225,37 @@ main {
     background-color: #ddd;
 }
 
+/* CORREÇÃO AQUI para o cabeçalho da coluna "Hábitos" */
 .habits-header {
     text-align: left;
     min-width: 180px;
-    position: sticky;
+    position: sticky; /* Mantém a coluna de hábitos "fixa" */
     left: 0;
-    background-color: #4CAF50;
-    z-index: 3;
+    background-color: #4CAF50; /* Cor de fundo para a célula fixa */
+    z-index: 3; /* Maior z-index para ficar acima do resto do cabeçalho */
 }
 
+/* CORREÇÃO AQUI para as células da coluna "Hábitos" no corpo da tabela */
 #habits-table tbody .habit-row td:first-child {
     text-align: left;
     position: sticky;
     left: 0;
-    background-color: white;
-    z-index: 1;
-    display: flex;
+    background-color: white; /* Cor de fundo para a célula fixa */
+    z-index: 1; /* Garante que esteja acima das outras células */
+    display: flex; /* Permite alinhar conteúdo e botões */
     align-items: center;
-    justify-content: space-between;
-    padding-right: 15px;
+    justify-content: space-between; /* Espaçamento entre nome e botões */
+    padding-right: 15px; /* Espaço para os botões */
 }
 
+/* Garante que a cor de fundo zebra funcione na primeira coluna fixa */
 #habits-table tbody tr:nth-child(even) td:first-child {
     background-color: #f2f2f2;
 }
 
 
 .day-cell {
-    width: 30px;
+    width: 30px; /* Tamanho fixo para as células do dia */
     height: 30px;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -260,11 +263,11 @@ main {
 }
 
 .day-cell.completed {
-    background-color: #8BC34A;
+    background-color: #8BC34A; /* Verde para concluído */
 }
 
 .day-cell.completed::after {
-    content: '\2713';
+    content: '\2713'; /* Checkmark unicode */
     color: white;
     font-size: 16px;
     position: absolute;
@@ -274,11 +277,11 @@ main {
 }
 
 .day-cell.today {
-    border: 2px solid #2196F3;
+    border: 2px solid #2196F3; /* Borda azul para o dia atual */
 }
 
 .day-cell.weekend {
-    background-color: #f0f0f0;
+    background-color: #f0f0f0; /* Fundo mais claro para fins de semana */
 }
 
 .day-cell:hover:not(.completed) {
@@ -288,26 +291,40 @@ main {
 .goal-header, .achieved-header {
     background-color: #4CAF50;
     color: white;
-    min-width: 80px;
+    min-width: 80px; /* Largura mínima para Goal e Achieved */
+    position: sticky; /* Para que essas colunas também fiquem fixas */
+    right: 0; /* Fixa à direita */
+    z-index: 2; /* Acima das células de dia */
 }
 
 .goal-cell, .achieved-cell {
     font-weight: bold;
+    position: sticky; /* Fixa as células à direita */
+    right: 0;
+    background-color: white; /* Garante que a cor de fundo da célula seja consistente */
+    z-index: 1; /* Acima das células de dia */
 }
 
+/* Ajusta as cores de fundo para as células fixas da direita */
+#habits-table tbody tr:nth-child(even) .goal-cell,
+#habits-table tbody tr:nth-child(even) .achieved-cell {
+    background-color: #f2f2f2;
+}
+
+
 .achieved-cell.success {
-    background-color: #D4EDDA;
-    color: #155724;
+    background-color: #D4EDDA; /* Verde claro */
+    color: #155724; /* Verde escuro */
 }
 
 .achieved-cell.warning {
-    background-color: #FFF3CD;
-    color: #856404;
+    background-color: #FFF3CD; /* Amarelo claro */
+    color: #856404; /* Amarelo escuro */
 }
 
 .achieved-cell.danger {
-    background-color: #F8D7DA;
-    color: #721C24;
+    background-color: #F8D7DA; /* Vermelho claro */
+    color: #721C24; /* Vermelho escuro */
 }
 
 .add-habit-container {
@@ -546,14 +563,23 @@ main {
     flex-shrink: 0;
 }
 
+/* Ajuste específico para os botões de ação do hábito */
+.habit-actions button {
+    display: flex; /* Para centralizar o ícone */
+    align-items: center;
+    justify-content: center;
+    width: 28px; /* Tamanho fixo para os botões */
+    height: 28px;
+    padding: 0; /* Remover padding padrão */
+    font-size: 14px; /* Tamanho do ícone */
+    border-radius: 50%; /* Torna os botões redondos */
+}
+
 .edit-habit-btn, .delete-habit-btn {
     background-color: #6c757d;
     color: white;
     border: none;
-    padding: 6px 8px;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 14px;
     transition: background-color 0.2s ease;
 }
 
