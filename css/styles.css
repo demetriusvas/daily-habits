@@ -2,8 +2,8 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f0f2f5; /* Fundo mais suave */
-    color: #333;
+    background-color: #F8F8F8; /* Fundo muito claro, quase branco */
+    color: #4A4A4A; /* Cinza escuro para texto principal */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -11,8 +11,8 @@ body {
 }
 
 header {
-    background-color: #6200EE; /* Azul escuro/Roxo como cor principal */
-    color: white;
+    background-color: #A2D2FF; /* Azul pastel suave */
+    color: #4A4A4A; /* Texto em cinza escuro para contraste */
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;
@@ -38,6 +38,7 @@ header {
 .logo-container h1 {
     margin: 0;
     font-size: 28px;
+    color: #4A4A4A; /* Título também em cinza escuro */
 }
 
 .user-controls {
@@ -47,8 +48,8 @@ header {
 }
 
 .premium-btn {
-    background-color: #FFD700; /* Amarelo dourado (manter para premium) */
-    color: #333;
+    background-color: #FFDDAA; /* Laranja pastel suave */
+    color: #6C5B7B; /* Tom de roxo escuro para texto */
     border: none;
     padding: 8px 15px;
     border-radius: 20px;
@@ -58,33 +59,34 @@ header {
 }
 
 .premium-btn:hover {
-    background-color: #e0b000;
+    background-color: #FFCC99; /* Laranja pastel um pouco mais escuro */
 }
 
 .theme-toggle {
     font-size: 20px;
     cursor: pointer;
-    color: white;
+    color: #4A4A4A; /* Ícone em cinza escuro */
     transition: color 0.3s ease;
 }
 
 .theme-toggle:hover {
-    color: #f0f0f0;
+    color: #666666;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
     gap: 8px;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.5); /* Fundo semi-transparente */
     padding: 8px 12px;
     border-radius: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    color: #4A4A4A; /* Texto do perfil em cinza escuro */
 }
 
 .user-profile:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 .user-profile span {
@@ -116,14 +118,14 @@ main {
     background-color: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 450px;
     text-align: center;
 }
 
 .auth-card h2 {
-    color: #6200EE; /* Azul escuro/Roxo */
+    color: #6C5B7B; /* Roxo acinzentado suave */
     margin-top: 0;
     font-size: 28px;
     margin-bottom: 15px;
@@ -157,14 +159,14 @@ main {
 .month-navigation h2 {
     margin: 0;
     font-size: 28px;
-    color: #6200EE; /* Azul escuro/Roxo */
+    color: #6C5B7B; /* Roxo acinzentado */
     min-width: 180px;
     text-align: center;
 }
 
 .nav-btn {
-    background-color: #6200EE; /* Azul escuro/Roxo */
-    color: white;
+    background-color: #C0D8F0; /* Azul pastel claro */
+    color: #4A4A4A; /* Texto/ícone em cinza escuro */
     border: none;
     padding: 10px 15px;
     border-radius: 50%;
@@ -177,7 +179,7 @@ main {
 }
 
 .nav-btn:hover {
-    background-color: #3700B3; /* Roxo mais escuro no hover */
+    background-color: #A2D2FF; /* Azul pastel mais escuro no hover */
 }
 
 .habits-container {
@@ -196,15 +198,15 @@ main {
 }
 
 #habits-table th, #habits-table td {
-    border: 1px solid #ddd;
+    border: 1px solid #E0E0E0; /* Bordas mais claras */
     padding: 8px;
     text-align: center;
     white-space: nowrap;
 }
 
 #habits-table thead th {
-    background-color: #6200EE; /* Azul escuro/Roxo */
-    color: white;
+    background-color: #BEE3DB; /* Verde água pastel */
+    color: #4A4A4A; /* Texto em cinza escuro */
     font-weight: bold;
     position: sticky;
     top: 0;
@@ -212,11 +214,11 @@ main {
 }
 
 #habits-table tbody tr:nth-child(even) {
-    background-color: #f8f8f8; /* Cinza claro para linhas pares */
+    background-color: #F5F5F5; /* Cinza muito claro para linhas pares */
 }
 
 #habits-table tbody tr:hover {
-    background-color: #e0e0e0; /* Cinza mais claro no hover */
+    background-color: #EFEFEF; /* Cinza claro no hover */
 }
 
 .habits-header {
@@ -224,7 +226,7 @@ main {
     min-width: 180px;
     position: sticky;
     left: 0;
-    background-color: #6200EE; /* Azul escuro/Roxo */
+    background-color: #BEE3DB; /* Verde água pastel */
     z-index: 3;
 }
 
@@ -241,7 +243,7 @@ main {
 }
 
 #habits-table tbody tr:nth-child(even) td:first-child {
-    background-color: #f8f8f8;
+    background-color: #F5F5F5;
 }
 
 .day-cell {
@@ -253,7 +255,7 @@ main {
 }
 
 .day-cell.completed {
-    background-color: #03DAC6; /* Ciano claro para concluído */
+    background-color: #98D7C2; /* Verde pastel mais forte para concluído */
 }
 
 .day-cell.completed::after {
@@ -267,20 +269,20 @@ main {
 }
 
 .day-cell.today {
-    border: 2px solid #BB86FC; /* Roxo claro para o dia atual */
+    border: 2px solid #FFCCBC; /* Laranja pêssego pastel para dia atual */
 }
 
 .day-cell.weekend {
-    background-color: #f5f5f5; /* Cinza bem claro para fins de semana */
+    background-color: #FAFAFA; /* Quase branco para fins de semana */
 }
 
 .day-cell:hover:not(.completed) {
-    background-color: #e0e0e0;
+    background-color: #E0E0E0;
 }
 
 .goal-header, .achieved-header {
-    background-color: #6200EE; /* Azul escuro/Roxo */
-    color: white;
+    background-color: #BEE3DB; /* Verde água pastel */
+    color: #4A4A4A;
     min-width: 80px;
     position: sticky;
     right: 0;
@@ -297,28 +299,28 @@ main {
 
 #habits-table tbody tr:nth-child(even) .goal-cell,
 #habits-table tbody tr:nth-child(even) .achieved-cell {
-    background-color: #f8f8f8;
+    background-color: #F5F5F5;
 }
 
 .achieved-cell.success {
-    background-color: #e0f2f1; /* Ciano muito claro */
-    color: #004d40; /* Ciano escuro */
+    background-color: #D4EDDA; /* Verde claro suave (manter para sucesso) */
+    color: #155724;
 }
 
 .achieved-cell.warning {
-    background-color: #FFF3CD; /* Amarelo claro (manter) */
-    color: #856404; /* Amarelo escuro (manter) */
+    background-color: #FFF3CD; /* Amarelo claro suave (manter para aviso) */
+    color: #856404;
 }
 
 .achieved-cell.danger {
-    background-color: #F8D7DA; /* Vermelho claro (manter) */
-    color: #721C24; /* Vermelho escuro (manter) */
+    background-color: #F8D7DA; /* Vermelho claro suave (manter para perigo) */
+    color: #721C24;
 }
 
 /* Cor para 0 concluído - ajustada para o novo esquema */
-.achieved-cell[data-achieved="0"] { /* Adicionei um atributo data-achieved no JS para isso */
-    background-color: #FFECB3; /* Amarelo pastel */
-    color: #b79c00;
+.achieved-cell[data-achieved="0"] {
+    background-color: #FEEEDC; /* Laranja pastel muito claro */
+    color: #B5651D; /* Tom de marrom suave */
 }
 
 
@@ -330,8 +332,8 @@ main {
 }
 
 #add-habit-btn {
-    background-color: #03DAC6; /* Ciano claro (cor de ação secundária) */
-    color: #1a1a1a; /* Texto mais escuro para contraste */
+    background-color: #FFC0B5; /* Pêssego pastel (botão de ação) */
+    color: #6C5B7B; /* Roxo acinzentado para texto */
     border: none;
     padding: 12px 25px;
     border-radius: 5px;
@@ -341,7 +343,7 @@ main {
 }
 
 #add-habit-btn:hover {
-    background-color: #018786; /* Ciano mais escuro no hover */
+    background-color: #FFA089; /* Pêssego pastel mais escuro no hover */
 }
 
 /* MODAIS */
@@ -362,7 +364,7 @@ main {
     background-color: #fefefe;
     margin: 5% auto;
     padding: 30px;
-    border: 1px solid #888;
+    border: 1px solid #E0E0E0; /* Borda mais clara */
     width: 90%;
     max-width: 500px;
     border-radius: 10px;
@@ -395,7 +397,7 @@ main {
 }
 
 .modal h2 {
-    color: #6200EE; /* Azul escuro/Roxo */
+    color: #6C5B7B; /* Roxo acinzentado */
     margin-top: 0;
     margin-bottom: 20px;
     text-align: center;
@@ -429,8 +431,8 @@ main {
 .form-group input[type="email"]:focus,
 .form-group input[type="password"]:focus {
     outline: none;
-    border-color: #6200EE; /* Azul escuro/Roxo no foco */
-    box-shadow: 0 0 5px rgba(98, 0, 238, 0.5);
+    border-color: #A2D2FF; /* Azul pastel no foco */
+    box-shadow: 0 0 5px rgba(162, 210, 255, 0.5);
 }
 
 .form-actions {
@@ -441,8 +443,8 @@ main {
 }
 
 .submit-btn {
-    background-color: #6200EE; /* Azul escuro/Roxo */
-    color: white;
+    background-color: #A2D2FF; /* Azul pastel */
+    color: #4A4A4A; /* Texto em cinza escuro */
     padding: 12px 25px;
     border: none;
     border-radius: 6px;
@@ -453,13 +455,13 @@ main {
 }
 
 .submit-btn:hover {
-    background-color: #3700B3; /* Roxo mais escuro no hover */
+    background-color: #8FD8FF; /* Azul pastel mais claro no hover */
     transform: translateY(-2px);
 }
 
 .delete-btn {
-    background-color: #B00020; /* Vermelho de erro padrão para exclusão */
-    color: white;
+    background-color: #FFB3BA; /* Vermelho rosa pastel para exclusão */
+    color: #8B0000; /* Vermelho escuro para texto */
     display: none;
     padding: 12px 25px;
     border: none;
@@ -475,7 +477,7 @@ main {
 }
 
 .delete-btn:hover {
-    background-color: #8B0000; /* Vermelho mais escuro no hover */
+    background-color: #FF8080; /* Vermelho rosa mais forte no hover */
     transform: translateY(-2px);
 }
 
@@ -497,7 +499,7 @@ main {
     background-color: #fefefe;
     margin: 5% auto;
     padding: 30px;
-    border: 1px solid #888;
+    border: 1px solid #E0E0E0;
     width: 80%;
     max-width: 400px;
     border-radius: 10px;
@@ -508,7 +510,7 @@ main {
 .confirm-modal-title {
     font-size: 24px;
     font-weight: bold;
-    color: #B00020; /* Vermelho de erro */
+    color: #FFB3BA; /* Vermelho rosa pastel */
     margin-bottom: 15px;
 }
 
@@ -525,8 +527,8 @@ main {
 }
 
 .confirm-btn {
-    background-color: #B00020; /* Vermelho de erro */
-    color: white;
+    background-color: #FFB3BA; /* Vermelho rosa pastel */
+    color: #8B0000;
     padding: 12px 25px;
     border: none;
     border-radius: 6px;
@@ -536,13 +538,13 @@ main {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .confirm-btn:hover {
-    background-color: #8B0000;
+    background-color: #FF8080;
     transform: translateY(-2px);
 }
 
 .cancel-btn {
-    background-color: #ccc;
-    color: #333;
+    background-color: #E0E0E0; /* Cinza claro */
+    color: #4A4A4A;
     padding: 12px 25px;
     border: none;
     border-radius: 6px;
@@ -552,7 +554,7 @@ main {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .cancel-btn:hover {
-    background-color: #bbb;
+    background-color: #CFCFCF;
     transform: translateY(-2px);
 }
 
@@ -576,7 +578,6 @@ main {
     flex-shrink: 0;
 }
 
-/* Ajuste específico para os botões de ação do hábito */
 .habit-actions button {
     display: flex;
     align-items: center;
@@ -589,24 +590,24 @@ main {
 }
 
 .edit-habit-btn {
-    background-color: #BB86FC; /* Roxo mais claro para editar */
-    color: #3700B3; /* Texto mais escuro para contraste */
+    background-color: #FFDDAA; /* Laranja pastel para editar */
+    color: #B5651D; /* Tom de marrom suave para texto */
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .edit-habit-btn:hover {
-    background-color: #6200EE;
-    color: white;
+    background-color: #FFCC99;
+    color: #B5651D;
 }
 
 .delete-habit-btn {
-    background-color: #B00020; /* Vermelho de erro */
+    background-color: #FFB3BA; /* Vermelho rosa pastel */
 }
 
 .delete-habit-btn:hover {
-    background-color: #8B0000;
+    background-color: #FF8080;
 }
 
 /* Responsividade */
