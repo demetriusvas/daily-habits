@@ -22,12 +22,6 @@ const HABITS_COLLECTION_NAME = 'habits';
 const initialHabits = [
     { name: "Ler um livro", goal: 20, completions: {} },
     { name: "Comer uma fruta", goal: 20, completions: {} },
-    { name: "Saúde", goal: 21, completions: {} },
-    { name: "Academia", goal: 21, completions: {} },
-    { name: "Estudar na Alura", goal: 21, completions: {} },
-    { name: "Aprender um idioma", goal: 21, completions: {} },
-    { name: "Passear com o Beethoven", goal: 16, completions: {} },
-    { name: "Escovar os dentes", goal: 30, completions: {} },
     { name: "Ouvir um podcast", goal: 21, completions: {} }
 ];
 
