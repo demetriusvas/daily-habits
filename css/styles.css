@@ -2,7 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f7f6;
+    background-color: #f0f2f5; /* Fundo mais suave */
     color: #333;
     display: flex;
     flex-direction: column;
@@ -11,23 +11,22 @@ body {
 }
 
 header {
-    background-color: #4CAF50;
+    background-color: #6200EE; /* Azul escuro/Roxo como cor principal */
     color: white;
     padding: 15px 20px;
     display: flex;
-    justify-content: space-between; /* Padrão: logo e controles separados */
+    justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Modificação para o header quando deslogado */
 #main-header.unauthenticated {
-    justify-content: center; /* Centraliza o logo */
-    padding: 20px; /* Mais padding para dar espaço */
+    justify-content: center;
+    padding: 20px;
 }
 
 #main-header.unauthenticated .user-controls {
-    display: none; /* Esconde os controles de usuário */
+    display: none;
 }
 
 .logo-container {
@@ -38,18 +37,17 @@ header {
 
 .logo-container h1 {
     margin: 0;
-    font-size: 28px; /* Aumenta um pouco para destaque */
+    font-size: 28px;
 }
 
 .user-controls {
-    display: flex; /* Visível por padrão no CSS, JS vai controlar */
+    display: flex;
     align-items: center;
     gap: 15px;
 }
 
-/* Estilos existentes para premium-btn, theme-toggle, user-profile */
 .premium-btn {
-    background-color: #FFD700;
+    background-color: #FFD700; /* Amarelo dourado (manter para premium) */
     color: #333;
     border: none;
     padding: 8px 15px;
@@ -95,23 +93,22 @@ header {
 
 
 main {
-    padding: 0; /* Remove padding padrão do main */
+    padding: 0;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Centraliza o conteúdo verticalmente */
+    justify-content: center;
 }
 
-/* Seção de Autenticação (Será visível por padrão via JS) */
 .auth-section {
-    display: flex; /* Definido como flex para centralizar o card */
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-    width: 100%; /* Ocupa a largura total */
-    padding: 20px; /* Padding para telas pequenas */
+    width: 100%;
+    padding: 20px;
     box-sizing: border-box;
 }
 
@@ -119,14 +116,14 @@ main {
     background-color: white;
     padding: 30px;
     border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra mais suave e moderna */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
     width: 100%;
-    max-width: 450px; /* Largura máxima para o card de login */
+    max-width: 450px;
     text-align: center;
 }
 
 .auth-card h2 {
-    color: #4CAF50;
+    color: #6200EE; /* Azul escuro/Roxo */
     margin-top: 0;
     font-size: 28px;
     margin-bottom: 15px;
@@ -139,20 +136,17 @@ main {
     line-height: 1.5;
 }
 
-/* Conteúdo principal do aplicativo (Será oculto por padrão via JS) */
 .app-content {
-    display: none; /* JS controlará isso. Se logado, será 'flex' */
+    display: none;
     width: 100%;
     flex-grow: 1;
-    display: flex; /* Para os elementos internos do app */
+    display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px; /* Adiciona padding aqui quando o app estiver visível */
+    padding: 20px;
     box-sizing: border-box;
 }
 
-
-/* Estilos existentes para month-navigation, habits-container, etc. */
 .month-navigation {
     display: flex;
     align-items: center;
@@ -163,13 +157,13 @@ main {
 .month-navigation h2 {
     margin: 0;
     font-size: 28px;
-    color: #4CAF50;
+    color: #6200EE; /* Azul escuro/Roxo */
     min-width: 180px;
     text-align: center;
 }
 
 .nav-btn {
-    background-color: #4CAF50;
+    background-color: #6200EE; /* Azul escuro/Roxo */
     color: white;
     border: none;
     padding: 10px 15px;
@@ -183,12 +177,12 @@ main {
 }
 
 .nav-btn:hover {
-    background-color: #45a049;
+    background-color: #3700B3; /* Roxo mais escuro no hover */
 }
 
 .habits-container {
     width: 100%;
-    overflow-x: auto; /* Permite rolagem horizontal para a tabela */
+    overflow-x: auto;
     margin-bottom: 30px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -198,64 +192,60 @@ main {
 #habits-table {
     width: 100%;
     border-collapse: collapse;
-    min-width: 700px; /* Garante que a tabela não fique muito pequena */
+    min-width: 700px;
 }
 
 #habits-table th, #habits-table td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: center;
-    white-space: nowrap; /* Evita que o texto quebre em várias linhas */
+    white-space: nowrap;
 }
 
 #habits-table thead th {
-    background-color: #4CAF50;
+    background-color: #6200EE; /* Azul escuro/Roxo */
     color: white;
     font-weight: bold;
-    position: sticky; /* Mantém o cabeçalho "fixo" na rolagem horizontal */
+    position: sticky;
     top: 0;
-    z-index: 2; /* Garante que o cabeçalho esteja acima das células */
+    z-index: 2;
 }
 
 #habits-table tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
+    background-color: #f8f8f8; /* Cinza claro para linhas pares */
 }
 
 #habits-table tbody tr:hover {
-    background-color: #ddd;
+    background-color: #e0e0e0; /* Cinza mais claro no hover */
 }
 
-/* CORREÇÃO AQUI para o cabeçalho da coluna "Hábitos" */
 .habits-header {
     text-align: left;
     min-width: 180px;
-    position: sticky; /* Mantém a coluna de hábitos "fixa" */
+    position: sticky;
     left: 0;
-    background-color: #4CAF50; /* Cor de fundo para a célula fixa */
-    z-index: 3; /* Maior z-index para ficar acima do resto do cabeçalho */
+    background-color: #6200EE; /* Azul escuro/Roxo */
+    z-index: 3;
 }
 
-/* CORREÇÃO AQUI para as células da coluna "Hábitos" no corpo da tabela */
 #habits-table tbody .habit-row td:first-child {
     text-align: left;
     position: sticky;
     left: 0;
-    background-color: white; /* Cor de fundo para a célula fixa */
-    z-index: 1; /* Garante que esteja acima das outras células */
-    display: flex; /* Permite alinhar conteúdo e botões */
+    background-color: white;
+    z-index: 1;
+    display: flex;
     align-items: center;
-    justify-content: space-between; /* Espaçamento entre nome e botões */
-    padding-right: 15px; /* Espaço para os botões */
+    justify-content: space-between;
+    padding-right: 15px;
 }
 
-/* Garante que a cor de fundo zebra funcione na primeira coluna fixa */
 #habits-table tbody tr:nth-child(even) td:first-child {
-    background-color: #f2f2f2;
+    background-color: #f8f8f8;
 }
-
 
 .day-cell {
-    width: 30px; /* Tamanho fixo para as células do dia */
+    width: 30px;
     height: 30px;
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -263,11 +253,11 @@ main {
 }
 
 .day-cell.completed {
-    background-color: #8BC34A; /* Verde para concluído */
+    background-color: #03DAC6; /* Ciano claro para concluído */
 }
 
 .day-cell.completed::after {
-    content: '\2713'; /* Checkmark unicode */
+    content: '\2713';
     color: white;
     font-size: 16px;
     position: absolute;
@@ -277,11 +267,11 @@ main {
 }
 
 .day-cell.today {
-    border: 2px solid #2196F3; /* Borda azul para o dia atual */
+    border: 2px solid #BB86FC; /* Roxo claro para o dia atual */
 }
 
 .day-cell.weekend {
-    background-color: #f0f0f0; /* Fundo mais claro para fins de semana */
+    background-color: #f5f5f5; /* Cinza bem claro para fins de semana */
 }
 
 .day-cell:hover:not(.completed) {
@@ -289,43 +279,48 @@ main {
 }
 
 .goal-header, .achieved-header {
-    background-color: #4CAF50;
+    background-color: #6200EE; /* Azul escuro/Roxo */
     color: white;
-    min-width: 80px; /* Largura mínima para Goal e Achieved */
-    position: sticky; /* Para que essas colunas também fiquem fixas */
-    right: 0; /* Fixa à direita */
-    z-index: 2; /* Acima das células de dia */
+    min-width: 80px;
+    position: sticky;
+    right: 0;
+    z-index: 2;
 }
 
 .goal-cell, .achieved-cell {
     font-weight: bold;
-    position: sticky; /* Fixa as células à direita */
+    position: sticky;
     right: 0;
-    background-color: white; /* Garante que a cor de fundo da célula seja consistente */
-    z-index: 1; /* Acima das células de dia */
+    background-color: white;
+    z-index: 1;
 }
 
-/* Ajusta as cores de fundo para as células fixas da direita */
 #habits-table tbody tr:nth-child(even) .goal-cell,
 #habits-table tbody tr:nth-child(even) .achieved-cell {
-    background-color: #f2f2f2;
+    background-color: #f8f8f8;
 }
 
-
 .achieved-cell.success {
-    background-color: #D4EDDA; /* Verde claro */
-    color: #155724; /* Verde escuro */
+    background-color: #e0f2f1; /* Ciano muito claro */
+    color: #004d40; /* Ciano escuro */
 }
 
 .achieved-cell.warning {
-    background-color: #FFF3CD; /* Amarelo claro */
-    color: #856404; /* Amarelo escuro */
+    background-color: #FFF3CD; /* Amarelo claro (manter) */
+    color: #856404; /* Amarelo escuro (manter) */
 }
 
 .achieved-cell.danger {
-    background-color: #F8D7DA; /* Vermelho claro */
-    color: #721C24; /* Vermelho escuro */
+    background-color: #F8D7DA; /* Vermelho claro (manter) */
+    color: #721C24; /* Vermelho escuro (manter) */
 }
+
+/* Cor para 0 concluído - ajustada para o novo esquema */
+.achieved-cell[data-achieved="0"] { /* Adicionei um atributo data-achieved no JS para isso */
+    background-color: #FFECB3; /* Amarelo pastel */
+    color: #b79c00;
+}
+
 
 .add-habit-container {
     width: 100%;
@@ -335,8 +330,8 @@ main {
 }
 
 #add-habit-btn {
-    background-color: #007BFF;
-    color: white;
+    background-color: #03DAC6; /* Ciano claro (cor de ação secundária) */
+    color: #1a1a1a; /* Texto mais escuro para contraste */
     border: none;
     padding: 12px 25px;
     border-radius: 5px;
@@ -346,10 +341,10 @@ main {
 }
 
 #add-habit-btn:hover {
-    background-color: #0056b3;
+    background-color: #018786; /* Ciano mais escuro no hover */
 }
 
-/* MODAIS (permanecem os mesmos) */
+/* MODAIS */
 .modal {
     display: none;
     position: fixed;
@@ -400,7 +395,7 @@ main {
 }
 
 .modal h2 {
-    color: #4CAF50;
+    color: #6200EE; /* Azul escuro/Roxo */
     margin-top: 0;
     margin-bottom: 20px;
     text-align: center;
@@ -434,8 +429,8 @@ main {
 .form-group input[type="email"]:focus,
 .form-group input[type="password"]:focus {
     outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    border-color: #6200EE; /* Azul escuro/Roxo no foco */
+    box-shadow: 0 0 5px rgba(98, 0, 238, 0.5);
 }
 
 .form-actions {
@@ -445,7 +440,9 @@ main {
     margin-top: 25px;
 }
 
-.submit-btn, .delete-btn, .confirm-btn, .cancel-btn {
+.submit-btn {
+    background-color: #6200EE; /* Azul escuro/Roxo */
+    color: white;
     padding: 12px 25px;
     border: none;
     border-radius: 6px;
@@ -455,20 +452,22 @@ main {
     transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.submit-btn {
-    background-color: #4CAF50;
-    color: white;
-}
-
 .submit-btn:hover {
-    background-color: #45a049;
+    background-color: #3700B3; /* Roxo mais escuro no hover */
     transform: translateY(-2px);
 }
 
 .delete-btn {
-    background-color: #f44336;
+    background-color: #B00020; /* Vermelho de erro padrão para exclusão */
     color: white;
     display: none;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .delete-btn.show {
@@ -476,7 +475,7 @@ main {
 }
 
 .delete-btn:hover {
-    background-color: #da190b;
+    background-color: #8B0000; /* Vermelho mais escuro no hover */
     transform: translateY(-2px);
 }
 
@@ -509,7 +508,7 @@ main {
 .confirm-modal-title {
     font-size: 24px;
     font-weight: bold;
-    color: #f44336;
+    color: #B00020; /* Vermelho de erro */
     margin-bottom: 15px;
 }
 
@@ -526,17 +525,31 @@ main {
 }
 
 .confirm-btn {
-    background-color: #f44336;
+    background-color: #B00020; /* Vermelho de erro */
     color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .confirm-btn:hover {
-    background-color: #da190b;
+    background-color: #8B0000;
     transform: translateY(-2px);
 }
 
 .cancel-btn {
     background-color: #ccc;
     color: #333;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 .cancel-btn:hover {
     background-color: #bbb;
@@ -565,34 +578,35 @@ main {
 
 /* Ajuste específico para os botões de ação do hábito */
 .habit-actions button {
-    display: flex; /* Para centralizar o ícone */
+    display: flex;
     align-items: center;
     justify-content: center;
-    width: 28px; /* Tamanho fixo para os botões */
+    width: 28px;
     height: 28px;
-    padding: 0; /* Remover padding padrão */
-    font-size: 14px; /* Tamanho do ícone */
-    border-radius: 50%; /* Torna os botões redondos */
+    padding: 0;
+    font-size: 14px;
+    border-radius: 50%;
 }
 
-.edit-habit-btn, .delete-habit-btn {
-    background-color: #6c757d;
-    color: white;
+.edit-habit-btn {
+    background-color: #BB86FC; /* Roxo mais claro para editar */
+    color: #3700B3; /* Texto mais escuro para contraste */
     border: none;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
 
 .edit-habit-btn:hover {
-    background-color: #5a6268;
+    background-color: #6200EE;
+    color: white;
 }
 
 .delete-habit-btn {
-    background-color: #dc3545;
+    background-color: #B00020; /* Vermelho de erro */
 }
 
 .delete-habit-btn:hover {
-    background-color: #c82333;
+    background-color: #8B0000;
 }
 
 /* Responsividade */
