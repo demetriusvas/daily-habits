@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyHabits - Acompanhe seus hábitos diários</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <h1>DailyHabits</h1>
+            <!-- <div class="dropdown">
+                <button class="dropdown-btn">How it works <i class="fas fa-chevron-down"></i></button>
+                <div class="dropdown-content">
+                    <a href="#">Como funciona</a>
+                    <a href="#">Dicas</a>
+                    <a href="#">FAQ</a>
+                </div>
+            </div> -->
+        </div>
+        <div class="user-controls">
+            <!-- <button class="premium-btn">Upgrade to Premium</button> -->
+            <div class="theme-toggle">
+                <i class="fas fa-moon"></i>
+            </div>
+            <div class="user-profile">
+                <span>Demetrius Vignati</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="month-navigation">
+            <button class="nav-btn prev-month"><i class="fas fa-chevron-left"></i></button>
+            <h2 id="current-month">May, 2025</h2>
+            <button class="nav-btn next-month"><i class="fas fa-chevron-right"></i></button>
+        </div>
+
+        <div class="habits-container">
+            <table id="habits-table">
+                <thead>
+                    <tr>
+                        <th class="habits-header">Habits</th>
+                        <!-- Dias do mês serão inseridos via JavaScript -->
+                        <th class="goal-header">Goal</th>
+                        <th class="achieved-header">Achieved</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Hábitos serão inseridos via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="add-habit-container">
+            <button id="add-habit-btn">+ New Habit</button>
+        </div>
+
+        <!-- Modal para adicionar/editar hábito -->
+        <div id="habit-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="modal-title">Adicionar Novo Hábito</h2>
+                <form id="habit-form">
+                    <div class="form-group">
+                        <label for="habit-name">Nome do Hábito:</label>
+                        <input type="text" id="habit-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="habit-goal">Meta (dias por mês):</label>
+                        <input type="number" id="habit-goal" min="1" max="31" value="21" required>
+                    </div>
+                    <div class="form-group form-actions">
+                        <button type="submit" class="submit-btn" id="habit-submit-btn">Adicionar</button>
+                        <button type="button" class="delete-btn" id="delete-habit-btn">Excluir</button>
+                    </div>
+                    <input type="hidden" id="edit-habit-id" value="">
+                </form>
+            </div>
+        </div>
+
+        <!-- Modal de confirmação para exclusão -->
+        <div id="confirm-modal" class="confirm-modal">
+            <div class="confirm-modal-content">
+                <div class="confirm-modal-title">Confirmar Exclusão</div>
+                <div class="confirm-modal-message">Tem certeza que deseja excluir este hábito? Esta ação não pode ser desfeita.</div>
+                <div class="confirm-modal-actions">
+                    <button class="confirm-btn" id="confirm-delete-btn">Sim, Excluir</button>
+                    <button class="cancel-btn" id="cancel-delete-btn">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
