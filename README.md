@@ -6,8 +6,6 @@
 
 ![Preview do site](./screenshot.png)
 
-> ⚠️ Certifique-se de que o arquivo `screenshot.png` está na raiz do projeto ou ajuste o caminho se estiver em outra pasta (ex: `./assets/screenshot.png`).
-
 ## 🌐 Acesse o Projeto
 
 Você pode acessar o projeto online clicando no link abaixo:
@@ -19,10 +17,3 @@ Você pode acessar o projeto online clicando no link abaixo:
 - HTML5
 - CSS3
 - JavaScript (ou framework que estiver usando)
-- (Adicione aqui qualquer outra tecnologia, biblioteca ou ferramenta)
-
-## 📁 Como Rodar Localmente
-
-1. Clone este repositório:
-   ```bash
-   git clone https://github.com/seuusuario/dialy-habits.git
