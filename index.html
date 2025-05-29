@@ -16,22 +16,13 @@
     <header>
         <div class="logo-container">
             <h1>DailyHabits</h1>
-            <!-- <div class="dropdown">
-                <button class="dropdown-btn">How it works <i class="fas fa-chevron-down"></i></button>
-                <div class="dropdown-content">
-                    <a href="#">Como funciona</a>
-                    <a href="#">Dicas</a>
-                    <a href="#">FAQ</a>
-                </div>
-            </div> -->
-        </div>
+            </div>
         <div class="user-controls">
-            <!-- <button class="premium-btn">Upgrade to Premium</button> -->
             <div class="theme-toggle">
                 <i class="fas fa-moon"></i>
             </div>
             <div class="user-profile">
-                <span>Demetrius Vignati</span>
+                <span>Convidado</span>
                 <i class="fas fa-chevron-down"></i>
             </div>
         </div>
@@ -40,7 +31,7 @@
     <main>
         <div class="month-navigation">
             <button class="nav-btn prev-month"><i class="fas fa-chevron-left"></i></button>
-            <h2 id="current-month">May, 2025</h2>
+            <h2 id="current-month">Maio, 2025</h2>
             <button class="nav-btn next-month"><i class="fas fa-chevron-right"></i></button>
         </div>
 
@@ -48,23 +39,21 @@
             <table id="habits-table">
                 <thead>
                     <tr>
-                        <th class="habits-header">Habits</th>
-                        <!-- Dias do mês serão inseridos via JavaScript -->
-                        <th class="goal-header">Goal</th>
-                        <th class="achieved-header">Achieved</th>
+                        <th class="habits-header">Hábitos</th>
+                        <th class="goal-header">Meta</th>
+                        <th class="achieved-header">Concluído</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Hábitos serão inseridos via JavaScript -->
+                    <tr><td colspan="34" style="text-align: center; padding: 20px;">Faça login para ver seus hábitos.</td></tr>
                 </tbody>
             </table>
         </div>
 
         <div class="add-habit-container">
-            <button id="add-habit-btn">+ New Habit</button>
+            <button id="add-habit-btn">+ Novo Hábito</button>
         </div>
 
-        <!-- Modal para adicionar/editar hábito -->
         <div id="habit-modal" class="modal">
             <div class="modal-content">
                 <span class="close-modal">&times;</span>
@@ -87,7 +76,6 @@
             </div>
         </div>
 
-        <!-- Modal de confirmação para exclusão -->
         <div id="confirm-modal" class="confirm-modal">
             <div class="confirm-modal-content">
                 <div class="confirm-modal-title">Confirmar Exclusão</div>
@@ -98,9 +86,35 @@
                 </div>
             </div>
         </div>
+
+        <div id="auth-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal auth-close-modal">&times;</span>
+                <h2 id="auth-modal-title">Entrar ou Registrar</h2>
+                <form id="auth-form">
+                    <div class="form-group">
+                        <label for="auth-email">E-mail:</label>
+                        <input type="email" id="auth-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password">Senha:</label>
+                        <input type="password" id="auth-password" required>
+                    </div>
+                    <div class="form-group form-actions">
+                        <button type="submit" class="submit-btn" id="login-btn">Entrar</button>
+                        <button type="button" class="submit-btn" id="register-btn">Registrar</button>
+                    </div>
+                    <p id="auth-error-message" style="color: red;"></p>
+                </form>
+                <button id="logout-btn" class="delete-btn" style="display: none; margin-top: 10px;">Sair</button>
+            </div>
+        </div>
+
     </main>
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     
     <script src="js/script.js"></script>
 </body>

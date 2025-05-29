@@ -8,27 +8,27 @@ const firebaseConfig = {
     appId: "1:1044155399824:web:1bd1c3a58fd0a11bc42215"
   };
 
-
 // Inicialize o Firebase
 firebase.initializeApp(firebaseConfig);
 
-// Obtenha uma referência para o Firestore
+// Obtenha referências para os serviços
 const db = firebase.firestore();
+const auth = firebase.auth();
 
 // Nome da coleção no Firestore onde os hábitos serão armazenados
 const HABITS_COLLECTION_NAME = 'habits';
 
-// Dados iniciais dos hábitos (serão usados se o Firestore estiver vazio)
+// Dados iniciais dos hábitos (serão usados se o Firestore estiver vazio para um novo usuário)
 const initialHabits = [
-    { id: 1, name: "Ler um livro", goal: 20, completions: {} },
-    { id: 2, name: "Comer uma fruta", goal: 20, completions: {} },
-    { id: 3, name: "Saúde", goal: 21, completions: {} },
-    { id: 4, name: "Academia", goal: 21, completions: {} },
-    { id: 5, name: "Estudar na Alura", goal: 21, completions: {} },
-    { id: 6, name: "Aprender um idioma", goal: 21, completions: {} },
-    { id: 7, name: "Passear com o Beethoven", goal: 16, completions: {} },
-    { id: 8, name: "Escovar os dentes", goal: 30, completions: {} },
-    { id: 9, name: "Ouvir um podcast", goal: 21, completions: {} }
+    { name: "Ler um livro", goal: 20, completions: {} },
+    { name: "Comer uma fruta", goal: 20, completions: {} },
+    { name: "Saúde", goal: 21, completions: {} },
+    { name: "Academia", goal: 21, completions: {} },
+    { name: "Estudar na Alura", goal: 21, completions: {} },
+    { name: "Aprender um idioma", goal: 21, completions: {} },
+    { name: "Passear com o Beethoven", goal: 16, completions: {} },
+    { name: "Escovar os dentes", goal: 30, completions: {} },
+    { name: "Ouvir um podcast", goal: 21, completions: {} }
 ];
 
 // Estado da aplicação
@@ -41,7 +41,8 @@ let state = {
     firstDayOfMonth: 0,
     editMode: false,
     editHabitId: null,
-    deleteHabitId: null
+    deleteHabitId: null,
+    user: null // Armazenará o objeto do usuário logado
 };
 
 // Elementos DOM
@@ -61,6 +62,19 @@ const confirmModal = document.getElementById('confirm-modal');
 const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 
+// Elementos DOM para Autenticação
+const userProfile = document.querySelector('.user-profile');
+const authModal = document.getElementById('auth-modal');
+const authCloseModalBtn = document.querySelector('.auth-close-modal');
+const authForm = document.getElementById('auth-form');
+const authEmailInput = document.getElementById('auth-email');
+const authPasswordInput = document.getElementById('auth-password');
+const loginBtn = document.getElementById('login-btn');
+const registerBtn = document.getElementById('register-btn');
+const logoutBtn = document.getElementById('logout-btn');
+const authErrorMessage = document.getElementById('auth-error-message');
+
+
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
     initializeApp();
@@ -71,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeApp() {
     updateMonthInfo();
     renderCalendar();
-    loadHabits(); // Carregar hábitos do Firestore
+    setupAuthListener(); // Configura o ouvinte de autenticação
 }
 
 // Configuração de event listeners
@@ -92,6 +106,38 @@ function setupEventListeners() {
         }
         if (e.target === confirmModal) {
             closeConfirmModal();
+        }
+        if (e.target === authModal) { // Adicionado para o modal de autenticação
+            closeAuthModal();
+        }
+    });
+
+    // Event listeners para autenticação
+    userProfile.addEventListener('click', showAuthModal);
+    authCloseModalBtn.addEventListener('click', closeAuthModal);
+    loginBtn.addEventListener('click', handleLogin);
+    registerBtn.addEventListener('click', handleRegister);
+    logoutBtn.addEventListener('click', handleLogout);
+    authForm.addEventListener('submit', (e) => { e.preventDefault(); }); // Previne o recarregamento da página ao enviar o formulário de auth
+}
+
+// NOVO: Ouvinte de estado de autenticação
+function setupAuthListener() {
+    auth.onAuthStateChanged(user => {
+        state.user = user;
+        if (user) {
+            console.log("Usuário logado:", user.email, "ID:", user.uid);
+            document.querySelector('.user-profile span').textContent = user.email;
+            addHabitBtn.style.display = 'inline-block'; // Mostra botão de adicionar
+            loadHabits(); // Carrega os hábitos do usuário logado
+        } else {
+            console.log("Nenhum usuário logado.");
+            document.querySelector('.user-profile span').textContent = 'Convidado';
+            addHabitBtn.style.display = 'none'; // Esconde botão de adicionar
+            state.habits = []; // Limpa os hábitos se ninguém estiver logado
+            renderHabits(); // Renderiza a tabela vazia ou com mensagem
+            // Você pode optar por mostrar o modal de login automaticamente aqui
+            // showAuthModal();
         }
     });
 }
@@ -155,12 +201,12 @@ function renderCalendar() {
     
     // Adicionar colunas Goal e Achieved
     const goalHeader = document.createElement('th');
-    goalHeader.textContent = 'Goal';
+    goalHeader.textContent = 'Meta';
     goalHeader.classList.add('goal-header');
     headerRow.appendChild(goalHeader);
     
     const achievedHeader = document.createElement('th');
-    achievedHeader.textContent = 'Achieved';
+    achievedHeader.textContent = 'Concluído';
     achievedHeader.classList.add('achieved-header');
     headerRow.appendChild(achievedHeader);
 }
@@ -168,7 +214,19 @@ function renderCalendar() {
 // Renderizar hábitos
 function renderHabits() {
     const tbody = habitsTable.querySelector('tbody');
-    tbody.innerHTML = '';
+    tbody.innerHTML = ''; // Limpa a tabela
+
+    if (state.habits.length === 0) {
+        const noHabitsRow = document.createElement('tr');
+        const noHabitsCell = document.createElement('td');
+        noHabitsCell.setAttribute('colspan', state.daysInMonth + 3); // Cobre todas as colunas
+        noHabitsCell.style.textAlign = 'center';
+        noHabitsCell.style.padding = '20px';
+        noHabitsCell.textContent = state.user ? 'Nenhum hábito cadastrado. Adicione um novo!' : 'Faça login para ver seus hábitos.';
+        noHabitsRow.appendChild(noHabitsCell);
+        tbody.appendChild(noHabitsRow);
+        return;
+    }
     
     state.habits.forEach(habit => {
         const row = document.createElement('tr');
@@ -273,41 +331,57 @@ function renderHabits() {
     });
 }
 
-// Carregar dados do Firestore
+// Carregar dados do Firestore (filtrando pelo ID do usuário)
 async function loadHabits() {
+    if (!state.user) {
+        state.habits = [];
+        renderHabits();
+        return;
+    }
     try {
-        const habitsSnapshot = await db.collection(HABITS_COLLECTION_NAME).get();
+        const userId = state.user.uid;
+        const habitsSnapshot = await db.collection(HABITS_COLLECTION_NAME)
+                                        .where('userId', '==', userId)
+                                        .get();
         const loadedHabits = [];
         habitsSnapshot.forEach(doc => {
             loadedHabits.push({ id: doc.id, ...doc.data() });
         });
         state.habits = loadedHabits;
         
-        // Se não houver hábitos no Firestore, adicione os iniciais
-        if (state.habits.length === 0) {
-            console.log("Nenhum hábito encontrado no Firestore. Adicionando hábitos iniciais...");
+        // Se não houver hábitos para este usuário, adicione os iniciais
+        if (state.habits.length === 0 && initialHabits.length > 0) {
+            console.log("Nenhum hábito encontrado para este usuário. Adicionando hábitos iniciais...");
+            const newHabitsForUser = [];
             for (const habit of initialHabits) {
                 const docRef = await db.collection(HABITS_COLLECTION_NAME).add({
                     name: habit.name,
                     goal: habit.goal,
-                    completions: habit.completions || {}
+                    completions: habit.completions || {},
+                    userId: userId // ASSOCIA O HÁBITO AO ID DO USUÁRIO
                 });
-                loadedHabits.push({ id: docRef.id, name: habit.name, goal: habit.goal, completions: habit.completions || {} });
+                newHabitsForUser.push({ id: docRef.id, name: habit.name, goal: habit.goal, completions: habit.completions || {}, userId: userId });
             }
-            state.habits = loadedHabits;
+            state.habits = newHabitsForUser;
         }
         
-        renderHabits(); // Renderizar após carregar os hábitos
+        renderHabits();
     } catch (error) {
         console.error("Erro ao carregar hábitos do Firestore:", error);
-        // Em caso de erro, voltar a usar os hábitos iniciais como fallback
-        state.habits = [...initialHabits];
+        alert("Ocorreu um erro ao carregar seus hábitos. Tente novamente.");
+        state.habits = [];
         renderHabits();
     }
 }
 
 // Alternar conclusão de hábito no Firestore
 async function toggleHabitCompletion(habitId, day) {
+    if (!state.user) {
+        alert("Você precisa estar logado para marcar hábitos.");
+        showAuthModal();
+        return;
+    }
+
     const habitIndex = state.habits.findIndex(h => h.id === habitId);
     if (habitIndex === -1) return;
     
@@ -336,6 +410,7 @@ async function toggleHabitCompletion(habitId, day) {
             [`completions.${monthKey}`]: completedDays
         });
         
+        // Atualiza o estado local APENAS SE a atualização no Firestore for bem-sucedida
         habit.completions = currentCompletions;
         renderHabits();
     } catch (error) {
@@ -353,7 +428,7 @@ function navigateToPrevMonth() {
     }
     updateMonthInfo();
     renderCalendar();
-    renderHabits(); // Renderizar novamente para refletir os dados do novo mês
+    renderHabits();
 }
 
 function navigateToNextMonth() {
@@ -364,11 +439,16 @@ function navigateToNextMonth() {
     }
     updateMonthInfo();
     renderCalendar();
-    renderHabits(); // Renderizar novamente para refletir os dados do novo mês
+    renderHabits();
 }
 
-// Funções do modal
+// Funções do modal de hábito
 function openHabitModal(habitId = null) {
+    if (!state.user) {
+        alert("Você precisa estar logado para adicionar ou editar hábitos.");
+        showAuthModal();
+        return;
+    }
     habitForm.reset();
     
     if (habitId) {
@@ -376,7 +456,10 @@ function openHabitModal(habitId = null) {
         state.editHabitId = habitId;
         
         const habit = state.habits.find(h => h.id === habitId);
-        if (!habit) return;
+        if (!habit) {
+            alert("Hábito não encontrado para edição.");
+            return;
+        }
         
         document.getElementById('habit-name').value = habit.name;
         document.getElementById('habit-goal').value = habit.goal;
@@ -410,11 +493,17 @@ function closeHabitModal() {
 async function handleHabitFormSubmit(e) {
     e.preventDefault();
     
+    if (!state.user) {
+        alert("Você precisa estar logado para adicionar ou editar hábitos.");
+        showAuthModal();
+        return;
+    }
+
     const habitName = document.getElementById('habit-name').value;
     const habitGoal = parseInt(document.getElementById('habit-goal').value);
     
-    if (!habitName || isNaN(habitGoal)) {
-        alert('Por favor, preencha todos os campos corretamente.');
+    if (!habitName || isNaN(habitGoal) || habitGoal < 1 || habitGoal > 31) {
+        alert('Por favor, preencha todos os campos corretamente (Meta entre 1 e 31).');
         return;
     }
     
@@ -434,7 +523,8 @@ async function handleHabitFormSubmit(e) {
             const newHabitData = {
                 name: habitName,
                 goal: habitGoal,
-                completions: {}
+                completions: {},
+                userId: state.user.uid // ASSOCIA O HÁBITO AO ID DO USUÁRIO
             };
             const docRef = await db.collection(HABITS_COLLECTION_NAME).add(newHabitData);
             state.habits.push({ id: docRef.id, ...newHabitData });
@@ -450,6 +540,11 @@ async function handleHabitFormSubmit(e) {
 
 // Funções para exclusão de hábito
 function showDeleteConfirmation() {
+    if (!state.user) {
+        alert("Você precisa estar logado para excluir hábitos.");
+        showAuthModal();
+        return;
+    }
     confirmModal.style.display = 'block';
 }
 
@@ -465,6 +560,12 @@ function closeConfirmModal() {
 
 // Excluir hábito do Firestore
 async function deleteHabit() {
+    if (!state.user) {
+        alert("Você precisa estar logado para excluir hábitos.");
+        closeConfirmModal();
+        showAuthModal();
+        return;
+    }
     if (state.deleteHabitId === null) return;
     
     try {
@@ -479,5 +580,97 @@ async function deleteHabit() {
     } catch (error) {
         console.error("Erro ao excluir hábito do Firestore:", error);
         alert("Ocorreu um erro ao excluir o hábito. Tente novamente.");
+    }
+}
+
+// --- Funções de Autenticação ---
+
+function showAuthModal() {
+    authModal.style.display = 'block';
+    authErrorMessage.textContent = ''; // Limpa mensagens de erro
+    authForm.reset();
+    // Ajusta visibilidade dos botões baseado no estado de login
+    if (state.user) {
+        loginBtn.style.display = 'none';
+        registerBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+    } else {
+        loginBtn.style.display = 'inline-block';
+        registerBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+    }
+}
+
+function closeAuthModal() {
+    authModal.style.display = 'none';
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const email = authEmailInput.value;
+    const password = authPasswordInput.value;
+    authErrorMessage.textContent = '';
+
+    if (!email || !password) {
+        authErrorMessage.textContent = 'Por favor, preencha todos os campos.';
+        return;
+    }
+
+    try {
+        await auth.signInWithEmailAndPassword(email, password);
+        closeAuthModal();
+    } catch (error) {
+        console.error("Erro ao fazer login:", error);
+        let message = 'Erro ao fazer login. Verifique seu e-mail e senha.';
+        if (error.code === 'auth/user-not-found') {
+            message = 'Usuário não encontrado. Registre-se primeiro.';
+        } else if (error.code === 'auth/wrong-password') {
+            message = 'Senha incorreta.';
+        } else if (error.code === 'auth/invalid-email') {
+            message = 'Formato de e-mail inválido.';
+        }
+        authErrorMessage.textContent = message;
+    }
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const email = authEmailInput.value;
+    const password = authPasswordInput.value;
+    authErrorMessage.textContent = '';
+
+    if (!email || !password) {
+        authErrorMessage.textContent = 'Por favor, preencha todos os campos.';
+        return;
+    }
+    if (password.length < 6) {
+        authErrorMessage.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+        return;
+    }
+
+    try {
+        await auth.createUserWithEmailAndPassword(email, password);
+        closeAuthModal();
+    } catch (error) {
+        console.error("Erro ao registrar:", error);
+        let message = 'Erro ao registrar. Tente novamente.';
+        if (error.code === 'auth/email-already-in-use') {
+            message = 'Este e-mail já está em uso.';
+        } else if (error.code === 'auth/weak-password') {
+            message = 'A senha é muito fraca.';
+        } else if (error.code === 'auth/invalid-email') {
+            message = 'Formato de e-mail inválido.';
+        }
+        authErrorMessage.textContent = message;
+    }
+}
+
+async function handleLogout() {
+    try {
+        await auth.signOut();
+        closeAuthModal();
+    } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+        alert("Ocorreu um erro ao sair. Tente novamente.");
     }
 }
