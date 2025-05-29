@@ -6,7 +6,7 @@
 
 Você pode acessar o projeto online clicando no link abaixo:
 
-🔗 [https://seusite.com/dialy-habits](https://seusite.com/dialy-habits)
+🔗 [https://daily-habits-tan.vercel.app/](https://daily-habits-tan.vercel.app/)
 
 ## 📸 Print da Página
 
