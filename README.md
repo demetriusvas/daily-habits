@@ -6,7 +6,8 @@
 
 Você pode acessar o projeto online clicando no link abaixo:
 
-🔗 [https://daily-habits-tan.vercel.app/](https://daily-habits-tan.vercel.app/)
+🔗 [Acesse o projeto online](https://daily-habits-tan.vercel.app/)
+
 
 ## 📸 Print da Página
 
