@@ -1,4 +1,24 @@
-// Dados iniciais dos hábitos (todos desmarcados por padrão)
+// Dados de configuração do Firebase (COLE AQUI O QUE VOCÊ COPIOU DO CONSOLE)
+const firebaseConfig = {
+    apiKey: "AIzaSyCQbiD5J9vKI1TP3qYQAXYcXWKNJT02IrU",
+    authDomain: "dailyhabitsapp-c6669.firebaseapp.com",
+    projectId: "dailyhabitsapp-c6669",
+    storageBucket: "dailyhabitsapp-c6669.firebasestorage.app",
+    messagingSenderId: "1044155399824",
+    appId: "1:1044155399824:web:1bd1c3a58fd0a11bc42215"
+  };
+
+
+// Inicialize o Firebase
+firebase.initializeApp(firebaseConfig);
+
+// Obtenha uma referência para o Firestore
+const db = firebase.firestore();
+
+// Nome da coleção no Firestore onde os hábitos serão armazenados
+const HABITS_COLLECTION_NAME = 'habits';
+
+// Dados iniciais dos hábitos (serão usados se o Firestore estiver vazio)
 const initialHabits = [
     { id: 1, name: "Ler um livro", goal: 20, completions: {} },
     { id: 2, name: "Comer uma fruta", goal: 20, completions: {} },
@@ -16,7 +36,7 @@ let state = {
     currentDate: new Date(),
     currentMonth: new Date().getMonth(),
     currentYear: new Date().getFullYear(),
-    habits: [...initialHabits],
+    habits: [], // Hábitos serão carregados do Firestore
     daysInMonth: 0,
     firstDayOfMonth: 0,
     editMode: false,
@@ -51,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initializeApp() {
     updateMonthInfo();
     renderCalendar();
-    renderHabits();
+    loadHabits(); // Carregar hábitos do Firestore
 }
 
 // Configuração de event listeners
@@ -253,35 +273,75 @@ function renderHabits() {
     });
 }
 
-// Alternar conclusão de hábito
-function toggleHabitCompletion(habitId, day) {
+// Carregar dados do Firestore
+async function loadHabits() {
+    try {
+        const habitsSnapshot = await db.collection(HABITS_COLLECTION_NAME).get();
+        const loadedHabits = [];
+        habitsSnapshot.forEach(doc => {
+            loadedHabits.push({ id: doc.id, ...doc.data() });
+        });
+        state.habits = loadedHabits;
+        
+        // Se não houver hábitos no Firestore, adicione os iniciais
+        if (state.habits.length === 0) {
+            console.log("Nenhum hábito encontrado no Firestore. Adicionando hábitos iniciais...");
+            for (const habit of initialHabits) {
+                const docRef = await db.collection(HABITS_COLLECTION_NAME).add({
+                    name: habit.name,
+                    goal: habit.goal,
+                    completions: habit.completions || {}
+                });
+                loadedHabits.push({ id: docRef.id, name: habit.name, goal: habit.goal, completions: habit.completions || {} });
+            }
+            state.habits = loadedHabits;
+        }
+        
+        renderHabits(); // Renderizar após carregar os hábitos
+    } catch (error) {
+        console.error("Erro ao carregar hábitos do Firestore:", error);
+        // Em caso de erro, voltar a usar os hábitos iniciais como fallback
+        state.habits = [...initialHabits];
+        renderHabits();
+    }
+}
+
+// Alternar conclusão de hábito no Firestore
+async function toggleHabitCompletion(habitId, day) {
     const habitIndex = state.habits.findIndex(h => h.id === habitId);
     if (habitIndex === -1) return;
     
     const habit = state.habits[habitIndex];
     const monthKey = getCurrentMonthKey();
     
-    // Inicializar o array de dias completados para o mês atual se não existir
-    if (!habit.completions[monthKey]) {
-        habit.completions[monthKey] = [];
+    const currentCompletions = { ...habit.completions };
+    if (!currentCompletions[monthKey]) {
+        currentCompletions[monthKey] = [];
     }
     
-    const completedDays = habit.completions[monthKey];
+    const completedDays = [...currentCompletions[monthKey]];
     const dayIndex = completedDays.indexOf(day);
     
     if (dayIndex === -1) {
-        // Adicionar dia à lista de dias concluídos do mês atual
         completedDays.push(day);
     } else {
-        // Remover dia da lista de dias concluídos do mês atual
         completedDays.splice(dayIndex, 1);
     }
     
-    // Atualizar a interface
-    renderHabits();
-    
-    // Salvar dados
-    saveData();
+    currentCompletions[monthKey] = completedDays;
+
+    try {
+        const habitRef = db.collection(HABITS_COLLECTION_NAME).doc(habitId);
+        await habitRef.update({
+            [`completions.${monthKey}`]: completedDays
+        });
+        
+        habit.completions = currentCompletions;
+        renderHabits();
+    } catch (error) {
+        console.error("Erro ao alternar conclusão do hábito no Firestore:", error);
+        alert("Ocorreu um erro ao atualizar o hábito. Tente novamente.");
+    }
 }
 
 // Navegação de mês
@@ -293,7 +353,7 @@ function navigateToPrevMonth() {
     }
     updateMonthInfo();
     renderCalendar();
-    renderHabits();
+    renderHabits(); // Renderizar novamente para refletir os dados do novo mês
 }
 
 function navigateToNextMonth() {
@@ -304,48 +364,38 @@ function navigateToNextMonth() {
     }
     updateMonthInfo();
     renderCalendar();
-    renderHabits();
+    renderHabits(); // Renderizar novamente para refletir os dados do novo mês
 }
 
 // Funções do modal
 function openHabitModal(habitId = null) {
-    // Resetar o formulário
     habitForm.reset();
     
     if (habitId) {
-        // Modo de edição
         state.editMode = true;
         state.editHabitId = habitId;
         
-        // Encontrar o hábito pelo ID
         const habit = state.habits.find(h => h.id === habitId);
         if (!habit) return;
         
-        // Preencher o formulário com os dados do hábito
         document.getElementById('habit-name').value = habit.name;
         document.getElementById('habit-goal').value = habit.goal;
         document.getElementById('edit-habit-id').value = habitId;
         
-        // Atualizar título e botão do modal
         modalTitle.textContent = 'Editar Hábito';
         habitSubmitBtn.textContent = 'Salvar';
         
-        // Mostrar botão de exclusão
         deleteHabitBtn.classList.add('show');
     } else {
-        // Modo de adição
         state.editMode = false;
         state.editHabitId = null;
         
-        // Atualizar título e botão do modal
         modalTitle.textContent = 'Adicionar Novo Hábito';
         habitSubmitBtn.textContent = 'Adicionar';
         
-        // Esconder botão de exclusão
         deleteHabitBtn.classList.remove('show');
     }
     
-    // Exibir o modal
     habitModal.style.display = 'block';
 }
 
@@ -356,8 +406,8 @@ function closeHabitModal() {
     state.editHabitId = null;
 }
 
-// Manipular envio do formulário de hábito (novo ou edição)
-function handleHabitFormSubmit(e) {
+// Manipular envio do formulário de hábito (novo ou edição) no Firestore
+async function handleHabitFormSubmit(e) {
     e.preventDefault();
     
     const habitName = document.getElementById('habit-name').value;
@@ -368,131 +418,66 @@ function handleHabitFormSubmit(e) {
         return;
     }
     
-    if (state.editMode && state.editHabitId) {
-        // Editar hábito existente
-        const habitIndex = state.habits.findIndex(h => h.id === state.editHabitId);
-        if (habitIndex !== -1) {
-            // Preservar completions
-            const completions = state.habits[habitIndex].completions;
-            
-            // Atualizar nome e meta
-            state.habits[habitIndex].name = habitName;
-            state.habits[habitIndex].goal = habitGoal;
+    try {
+        if (state.editMode && state.editHabitId) {
+            const habitToUpdateRef = db.collection(HABITS_COLLECTION_NAME).doc(state.editHabitId);
+            await habitToUpdateRef.update({
+                name: habitName,
+                goal: habitGoal
+            });
+            const habitIndex = state.habits.findIndex(h => h.id === state.editHabitId);
+            if (habitIndex !== -1) {
+                state.habits[habitIndex].name = habitName;
+                state.habits[habitIndex].goal = habitGoal;
+            }
+        } else {
+            const newHabitData = {
+                name: habitName,
+                goal: habitGoal,
+                completions: {}
+            };
+            const docRef = await db.collection(HABITS_COLLECTION_NAME).add(newHabitData);
+            state.habits.push({ id: docRef.id, ...newHabitData });
         }
-    } else {
-        // Criar novo hábito
-        const newHabit = {
-            id: state.habits.length > 0 ? Math.max(...state.habits.map(h => h.id)) + 1 : 1,
-            name: habitName,
-            goal: habitGoal,
-            completions: {}
-        };
         
-        // Adicionar ao estado
-        state.habits.push(newHabit);
+        renderHabits();
+        closeHabitModal();
+    } catch (error) {
+        console.error("Erro ao salvar hábito no Firestore:", error);
+        alert("Ocorreu um erro ao salvar o hábito. Tente novamente.");
     }
-    
-    // Atualizar interface
-    renderHabits();
-    
-    // Salvar dados
-    saveData();
-    
-    // Fechar modal
-    closeHabitModal();
 }
 
 // Funções para exclusão de hábito
 function showDeleteConfirmation() {
-    // Exibir modal de confirmação
     confirmModal.style.display = 'block';
 }
 
 function closeConfirmModal() {
     confirmModal.style.display = 'none';
     
-    // Se o modal foi aberto a partir do botão de exclusão no modal de edição,
-    // manter o modal de edição aberto
     if (habitModal.style.display === 'block') {
         return;
     }
     
-    // Limpar ID de exclusão se o modal foi fechado sem confirmar
     state.deleteHabitId = null;
 }
 
-function deleteHabit() {
-    // Verificar se há um ID de hábito para excluir
+// Excluir hábito do Firestore
+async function deleteHabit() {
     if (state.deleteHabitId === null) return;
     
-    // Encontrar o índice do hábito
-    const habitIndex = state.habits.findIndex(h => h.id === state.deleteHabitId);
-    if (habitIndex === -1) return;
-    
-    // Remover o hábito do array
-    state.habits.splice(habitIndex, 1);
-    
-    // Atualizar interface
-    renderHabits();
-    
-    // Salvar dados
-    saveData();
-    
-    // Fechar modais
-    closeConfirmModal();
-    closeHabitModal();
-    
-    // Limpar ID de exclusão
-    state.deleteHabitId = null;
-}
-
-// Função para salvar dados no localStorage
-function saveData() {
-    localStorage.setItem('dailyHabitsData', JSON.stringify({
-        habits: state.habits,
-        lastUpdated: new Date().toISOString()
-    }));
-}
-
-// Função para carregar dados do localStorage
-function loadData() {
-    const savedData = localStorage.getItem('dailyHabitsData');
-    if (savedData) {
-        const parsedData = JSON.parse(savedData);
+    try {
+        await db.collection(HABITS_COLLECTION_NAME).doc(state.deleteHabitId).delete();
         
-        // Verificar se os dados salvos usam o formato antigo (com days em vez de completions)
-        const needsMigration = parsedData.habits.some(habit => habit.days !== undefined);
+        state.habits = state.habits.filter(h => h.id !== state.deleteHabitId);
         
-        if (needsMigration) {
-            // Migrar dados do formato antigo para o novo
-            parsedData.habits.forEach(habit => {
-                // Inicializar completions como objeto vazio
-                habit.completions = {};
-                
-                // Se houver dias marcados, colocá-los no mês atual
-                if (habit.days && habit.days.length > 0) {
-                    const currentMonth = new Date().getMonth();
-                    const currentYear = new Date().getFullYear();
-                    const monthKey = `${currentYear}-${currentMonth}`;
-                    
-                    habit.completions[monthKey] = [...habit.days];
-                }
-                
-                // Remover a propriedade days
-                delete habit.days;
-                delete habit.achieved;
-            });
-        }
-        
-        state.habits = parsedData.habits;
+        renderHabits();
+        closeConfirmModal();
+        closeHabitModal();
+        state.deleteHabitId = null;
+    } catch (error) {
+        console.error("Erro ao excluir hábito do Firestore:", error);
+        alert("Ocorreu um erro ao excluir o hábito. Tente novamente.");
     }
-}
-
-// Tentar carregar dados salvos
-try {
-    loadData();
-} catch (error) {
-    console.error('Erro ao carregar dados:', error);
-    // Usar dados iniciais em caso de erro
-    state.habits = [...initialHabits];
 }
