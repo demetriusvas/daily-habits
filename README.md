@@ -2,21 +2,23 @@
 
 **Dialy Habits** é uma aplicação web simples para acompanhar e organizar seus hábitos diários. A proposta é ajudar no desenvolvimento pessoal por meio da criação de rotinas saudáveis e do monitoramento das tarefas concluídas diariamente.
 
-## 📸 Print da Página
-
-![Preview do site](./screenshot.png)
-
 ## 🌐 Acesse o Projeto
 
 Você pode acessar o projeto online clicando no link abaixo:
 
 🔗 [https://seusite.com/dialy-habits](https://seusite.com/dialy-habits)
 
+## 📸 Print da Página
+
+![Preview do site](./screenshot.png)
+
+![Preview do site](./screenshot2.png)
+
 ## 🛠️ Tecnologias Utilizadas
 
 <p align="left">
   <a href="#">
-    <img src="https://skillicons.dev/icons?i=html,css" />
+    <img src="https://skillicons.dev/icons?i=html,css,js" />
   </a>
 </p>
 
