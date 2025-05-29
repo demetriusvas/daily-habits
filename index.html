@@ -13,11 +13,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <header>
+    <header id="main-header">
         <div class="logo-container">
             <h1>DailyHabits</h1>
-            </div>
-        <div class="user-controls">
+        </div>
+        <div class="user-controls" id="user-controls">
             <div class="theme-toggle">
                 <i class="fas fa-moon"></i>
             </div>
@@ -29,29 +29,53 @@
     </header>
 
     <main>
-        <div class="month-navigation">
-            <button class="nav-btn prev-month"><i class="fas fa-chevron-left"></i></button>
-            <h2 id="current-month">Maio, 2025</h2>
-            <button class="nav-btn next-month"><i class="fas fa-chevron-right"></i></button>
+        <div id="auth-section" class="auth-section">
+            <div class="auth-card">
+                <h2>Bem-vindo ao DailyHabits</h2>
+                <p>Acompanhe seus hábitos e alcance suas metas de forma simples e eficaz.</p>
+                <form id="auth-form-main">
+                    <div class="form-group">
+                        <label for="auth-email-main">E-mail:</label>
+                        <input type="email" id="auth-email-main" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="auth-password-main">Senha:</label>
+                        <input type="password" id="auth-password-main" required>
+                    </div>
+                    <div class="form-group form-actions">
+                        <button type="submit" class="submit-btn" id="login-btn-main">Entrar</button>
+                        <button type="button" class="submit-btn" id="register-btn-main">Registrar</button>
+                    </div>
+                    <p id="auth-error-message-main" style="color: red; text-align: center; margin-top: 10px;"></p>
+                </form>
+            </div>
         </div>
 
-        <div class="habits-container">
-            <table id="habits-table">
-                <thead>
-                    <tr>
-                        <th class="habits-header">Hábitos</th>
-                        <th class="goal-header">Meta</th>
-                        <th class="achieved-header">Concluído</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr><td colspan="34" style="text-align: center; padding: 20px;">Faça login para ver seus hábitos.</td></tr>
-                </tbody>
-            </table>
-        </div>
+        <div id="app-content" class="app-content">
+            <div class="month-navigation">
+                <button class="nav-btn prev-month"><i class="fas fa-chevron-left"></i></button>
+                <h2 id="current-month">Maio, 2025</h2>
+                <button class="nav-btn next-month"><i class="fas fa-chevron-right"></i></button>
+            </div>
 
-        <div class="add-habit-container">
-            <button id="add-habit-btn">+ Novo Hábito</button>
+            <div class="habits-container">
+                <table id="habits-table">
+                    <thead>
+                        <tr>
+                            <th class="habits-header">Hábitos</th>
+                            <th class="goal-header">Meta</th>
+                            <th class="achieved-header">Concluído</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="34" style="text-align: center; padding: 20px;">Carregando hábitos...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="add-habit-container">
+                <button id="add-habit-btn">+ Novo Hábito</button>
+            </div>
         </div>
 
         <div id="habit-modal" class="modal">
@@ -86,30 +110,6 @@
                 </div>
             </div>
         </div>
-
-        <div id="auth-modal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal auth-close-modal">&times;</span>
-                <h2 id="auth-modal-title">Entrar ou Registrar</h2>
-                <form id="auth-form">
-                    <div class="form-group">
-                        <label for="auth-email">E-mail:</label>
-                        <input type="email" id="auth-email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="auth-password">Senha:</label>
-                        <input type="password" id="auth-password" required>
-                    </div>
-                    <div class="form-group form-actions">
-                        <button type="submit" class="submit-btn" id="login-btn">Entrar</button>
-                        <button type="button" class="submit-btn" id="register-btn">Registrar</button>
-                    </div>
-                    <p id="auth-error-message" style="color: red;"></p>
-                </form>
-                <button id="logout-btn" class="delete-btn" style="display: none; margin-top: 10px;">Sair</button>
-            </div>
-        </div>
-
     </main>
 
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>

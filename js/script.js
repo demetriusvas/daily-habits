@@ -22,6 +22,12 @@ const HABITS_COLLECTION_NAME = 'habits';
 const initialHabits = [
     { name: "Ler um livro", goal: 20, completions: {} },
     { name: "Comer uma fruta", goal: 20, completions: {} },
+    { name: "Saúde", goal: 21, completions: {} },
+    { name: "Academia", goal: 21, completions: {} },
+    { name: "Estudar na Alura", goal: 21, completions: {} },
+    { name: "Aprender um idioma", goal: 21, completions: {} },
+    { name: "Passear com o Beethoven", goal: 16, completions: {} },
+    { name: "Escovar os dentes", goal: 30, completions: {} },
     { name: "Ouvir um podcast", goal: 21, completions: {} }
 ];
 
@@ -39,7 +45,7 @@ let state = {
     user: null // Armazenará o objeto do usuário logado
 };
 
-// Elementos DOM
+// Elementos DOM para o aplicativo de hábitos
 const habitsTable = document.getElementById('habits-table');
 const currentMonthElement = document.getElementById('current-month');
 const prevMonthBtn = document.querySelector('.prev-month');
@@ -56,34 +62,32 @@ const confirmModal = document.getElementById('confirm-modal');
 const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
 const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
 
-// Elementos DOM para Autenticação
-const userProfile = document.querySelector('.user-profile');
-const authModal = document.getElementById('auth-modal');
-const authCloseModalBtn = document.querySelector('.auth-close-modal');
-const authForm = document.getElementById('auth-form');
-const authEmailInput = document.getElementById('auth-email');
-const authPasswordInput = document.getElementById('auth-password');
-const loginBtn = document.getElementById('login-btn');
-const registerBtn = document.getElementById('register-btn');
-const logoutBtn = document.getElementById('logout-btn');
-const authErrorMessage = document.getElementById('auth-error-message');
+// Elementos DOM para Autenticação e Visibilidade da Interface
+const mainHeader = document.getElementById('main-header');
+const userControls = document.getElementById('user-controls');
+const userProfileSpan = document.querySelector('.user-profile span'); // Apenas o span do nome
+const authSection = document.getElementById('auth-section'); // Seção de autenticação principal
+const appContent = document.getElementById('app-content'); // Conteúdo principal do app
+
+// Elementos do formulário de autenticação na página principal
+const authFormMain = document.getElementById('auth-form-main');
+const authEmailInputMain = document.getElementById('auth-email-main');
+const authPasswordInputMain = document.getElementById('auth-password-main');
+const loginBtnMain = document.getElementById('login-btn-main');
+const registerBtnMain = document.getElementById('register-btn-main');
+const authErrorMessageMain = document.getElementById('auth-error-message-main');
 
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', () => {
-    initializeApp();
+    // initializeApp(); // Não chamamos diretamente, pois setupAuthListener cuidará da primeira renderização
     setupEventListeners();
+    setupAuthListener(); // Este será o ponto de entrada principal
 });
-
-// Função de inicialização
-function initializeApp() {
-    updateMonthInfo();
-    renderCalendar();
-    setupAuthListener(); // Configura o ouvinte de autenticação
-}
 
 // Configuração de event listeners
 function setupEventListeners() {
+    // Listeners para navegação e botões de hábito
     prevMonthBtn.addEventListener('click', navigateToPrevMonth);
     nextMonthBtn.addEventListener('click', navigateToNextMonth);
     addHabitBtn.addEventListener('click', () => openHabitModal());
@@ -93,7 +97,7 @@ function setupEventListeners() {
     confirmDeleteBtn.addEventListener('click', deleteHabit);
     cancelDeleteBtn.addEventListener('click', closeConfirmModal);
     
-    // Fechar modal ao clicar fora
+    // Fechar modais ao clicar fora
     window.addEventListener('click', (e) => {
         if (e.target === habitModal) {
             closeHabitModal();
@@ -101,37 +105,47 @@ function setupEventListeners() {
         if (e.target === confirmModal) {
             closeConfirmModal();
         }
-        if (e.target === authModal) { // Adicionado para o modal de autenticação
-            closeAuthModal();
-        }
     });
 
-    // Event listeners para autenticação
-    userProfile.addEventListener('click', showAuthModal);
-    authCloseModalBtn.addEventListener('click', closeAuthModal);
-    loginBtn.addEventListener('click', handleLogin);
-    registerBtn.addEventListener('click', handleRegister);
-    logoutBtn.addEventListener('click', handleLogout);
-    authForm.addEventListener('submit', (e) => { e.preventDefault(); }); // Previne o recarregamento da página ao enviar o formulário de auth
+    // Event listeners para autenticação na página principal
+    loginBtnMain.addEventListener('click', handleLogin);
+    registerBtnMain.addEventListener('click', handleRegister);
+    authFormMain.addEventListener('submit', (e) => { e.preventDefault(); }); // Previne o recarregamento
+
+    // Adicionado listener para o clique no perfil do usuário (para logout)
+    document.querySelector('.user-profile').addEventListener('click', handleUserProfileClick);
 }
 
-// NOVO: Ouvinte de estado de autenticação
+// NOVO: Função para lidar com o clique no perfil do usuário (para logout)
+function handleUserProfileClick() {
+    if (state.user) {
+        if (confirm("Você deseja sair da sua conta?")) {
+            handleLogout();
+        }
+    }
+}
+
+// NOVO: Ouvinte de estado de autenticação - Controla a visibilidade da UI
 function setupAuthListener() {
     auth.onAuthStateChanged(user => {
         state.user = user;
         if (user) {
             console.log("Usuário logado:", user.email, "ID:", user.uid);
-            document.querySelector('.user-profile span').textContent = user.email;
-            addHabitBtn.style.display = 'inline-block'; // Mostra botão de adicionar
+            userProfileSpan.textContent = user.email; // Atualiza o nome de exibição
+            mainHeader.classList.remove('unauthenticated'); // Remove classe para mostrar controles
+            userControls.style.display = 'flex'; // Mostra os controles do usuário
+            authSection.style.display = 'none'; // Esconde a seção de autenticação
+            appContent.style.display = 'flex'; // Mostra o conteúdo principal do app (como flex para coluna)
             loadHabits(); // Carrega os hábitos do usuário logado
         } else {
             console.log("Nenhum usuário logado.");
-            document.querySelector('.user-profile span').textContent = 'Convidado';
-            addHabitBtn.style.display = 'none'; // Esconde botão de adicionar
+            userProfileSpan.textContent = 'Convidado';
+            mainHeader.classList.add('unauthenticated'); // Adiciona classe para esconder controles
+            userControls.style.display = 'none'; // Esconde os controles do usuário
+            authSection.style.display = 'flex'; // Mostra a seção de autenticação
+            appContent.style.display = 'none'; // Esconde o conteúdo principal do app
             state.habits = []; // Limpa os hábitos se ninguém estiver logado
-            renderHabits(); // Renderiza a tabela vazia ou com mensagem
-            // Você pode optar por mostrar o modal de login automaticamente aqui
-            // showAuthModal();
+            renderHabits(); // Renderiza a tabela vazia com a mensagem "Faça login..."
         }
     });
 }
@@ -159,41 +173,35 @@ function updateMonthInfo() {
     state.daysInMonth = new Date(state.currentYear, state.currentMonth + 1, 0).getDate();
     state.firstDayOfMonth = date.getDay();
     
-    // Atualizar texto do mês atual
     const monthNames = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
     currentMonthElement.textContent = `${monthNames[state.currentMonth]}, ${state.currentYear}`;
 }
 
-// Renderizar cabeçalho do calendário
+// Renderizar cabeçalho do calendário (dias da semana)
 function renderCalendar() {
     const headerRow = habitsTable.querySelector('thead tr');
     
-    // Limpar cabeçalho existente, mantendo a primeira coluna (Habits)
-    while (headerRow.children.length > 1) {
+    while (headerRow.children.length > 1) { // Limpa tudo exceto a primeira coluna "Hábitos"
         headerRow.removeChild(headerRow.lastChild);
     }
     
-    // Adicionar dias do mês
     for (let day = 1; day <= state.daysInMonth; day++) {
         const dayHeader = document.createElement('th');
         dayHeader.textContent = day;
         
-        // Destacar o dia atual
         const today = new Date();
         if (today.getDate() === day && today.getMonth() === state.currentMonth && today.getFullYear() === state.currentYear) {
             dayHeader.classList.add('current-day');
         }
         
-        // Adicionar classes para dias da semana
         const dayOfWeek = new Date(state.currentYear, state.currentMonth, day).getDay();
-        if (dayOfWeek === 0 || dayOfWeek === 6) {
+        if (dayOfWeek === 0 || dayOfWeek === 6) { // Domingo (0) e Sábado (6)
             dayHeader.classList.add('weekend');
         }
         
         headerRow.appendChild(dayHeader);
     }
     
-    // Adicionar colunas Goal e Achieved
     const goalHeader = document.createElement('th');
     goalHeader.textContent = 'Meta';
     goalHeader.classList.add('goal-header');
@@ -205,18 +213,30 @@ function renderCalendar() {
     headerRow.appendChild(achievedHeader);
 }
 
-// Renderizar hábitos
+// Renderizar hábitos na tabela
 function renderHabits() {
     const tbody = habitsTable.querySelector('tbody');
-    tbody.innerHTML = ''; // Limpa a tabela
+    tbody.innerHTML = ''; // Limpa a tabela antes de renderizar
+
+    if (!state.user) {
+        const noHabitsRow = document.createElement('tr');
+        const noHabitsCell = document.createElement('td');
+        noHabitsCell.setAttribute('colspan', state.daysInMonth + 3);
+        noHabitsCell.style.textAlign = 'center';
+        noHabitsCell.style.padding = '20px';
+        noHabitsCell.textContent = 'Faça login para ver seus hábitos.';
+        noHabitsRow.appendChild(noHabitsCell);
+        tbody.appendChild(noHabitsRow);
+        return;
+    }
 
     if (state.habits.length === 0) {
         const noHabitsRow = document.createElement('tr');
         const noHabitsCell = document.createElement('td');
-        noHabitsCell.setAttribute('colspan', state.daysInMonth + 3); // Cobre todas as colunas
+        noHabitsCell.setAttribute('colspan', state.daysInMonth + 3);
         noHabitsCell.style.textAlign = 'center';
         noHabitsCell.style.padding = '20px';
-        noHabitsCell.textContent = state.user ? 'Nenhum hábito cadastrado. Adicione um novo!' : 'Faça login para ver seus hábitos.';
+        noHabitsCell.textContent = 'Nenhum hábito cadastrado. Clique em "+ Novo Hábito" para adicionar!';
         noHabitsRow.appendChild(noHabitsCell);
         tbody.appendChild(noHabitsRow);
         return;
@@ -227,15 +247,11 @@ function renderHabits() {
         row.classList.add('habit-row');
         row.dataset.habitId = habit.id;
         
-        // Coluna do nome do hábito com botões de edição e exclusão
         const habitNameCell = document.createElement('td');
-        
         const habitNameContainer = document.createElement('div');
         habitNameContainer.classList.add('habit-name-container');
-        
         const habitNameSpan = document.createElement('span');
         habitNameSpan.textContent = habit.name;
-        
         const habitActions = document.createElement('div');
         habitActions.classList.add('habit-actions');
         
@@ -256,52 +272,37 @@ function renderHabits() {
         
         habitActions.appendChild(editButton);
         habitActions.appendChild(deleteButton);
-        
         habitNameContainer.appendChild(habitNameSpan);
         habitNameContainer.appendChild(habitActions);
         habitNameCell.appendChild(habitNameContainer);
-        
         row.appendChild(habitNameCell);
         
-        // Obter dias completados no mês atual
         const completedDays = getCompletedDaysInCurrentMonth(habit);
         
-        // Células para cada dia do mês
         for (let day = 1; day <= state.daysInMonth; day++) {
             const dayCell = document.createElement('td');
             dayCell.classList.add('day-cell');
-            
-            // Verificar se o hábito foi completado neste dia
             if (completedDays.includes(day)) {
                 dayCell.classList.add('completed');
             }
-            
-            // Destacar o dia atual
             const today = new Date();
             if (today.getDate() === day && today.getMonth() === state.currentMonth && today.getFullYear() === state.currentYear) {
                 dayCell.classList.add('today');
             }
-            
-            // Adicionar evento de clique para marcar/desmarcar
             dayCell.addEventListener('click', () => toggleHabitCompletion(habit.id, day));
-            
             row.appendChild(dayCell);
         }
         
-        // Coluna Goal
         const goalCell = document.createElement('td');
         goalCell.textContent = habit.goal;
         goalCell.classList.add('goal-cell');
         row.appendChild(goalCell);
         
-        // Coluna Achieved - usar contagem do mês atual
         const achieved = getAchievedCountInCurrentMonth(habit);
-        
         const achievedCell = document.createElement('td');
         achievedCell.textContent = achieved;
         achievedCell.classList.add('achieved-cell');
         
-        // Adicionar classes baseadas no progresso
         const progress = (achieved / habit.goal) * 100;
         if (progress >= 100) {
             achievedCell.classList.add('success');
@@ -312,15 +313,12 @@ function renderHabits() {
             achievedCell.classList.add('danger');
             achievedCell.style.backgroundColor = '#ff767525';
         }
-        
-        // Definir cor de fundo baseada no progresso
         if (achieved === 0) {
             achievedCell.style.backgroundColor = '#ffdd57';
             achievedCell.classList.remove('success');
         }
         
         row.appendChild(achievedCell);
-        
         tbody.appendChild(row);
     });
 }
@@ -343,7 +341,6 @@ async function loadHabits() {
         });
         state.habits = loadedHabits;
         
-        // Se não houver hábitos para este usuário, adicione os iniciais
         if (state.habits.length === 0 && initialHabits.length > 0) {
             console.log("Nenhum hábito encontrado para este usuário. Adicionando hábitos iniciais...");
             const newHabitsForUser = [];
@@ -352,7 +349,7 @@ async function loadHabits() {
                     name: habit.name,
                     goal: habit.goal,
                     completions: habit.completions || {},
-                    userId: userId // ASSOCIA O HÁBITO AO ID DO USUÁRIO
+                    userId: userId
                 });
                 newHabitsForUser.push({ id: docRef.id, name: habit.name, goal: habit.goal, completions: habit.completions || {}, userId: userId });
             }
@@ -372,7 +369,6 @@ async function loadHabits() {
 async function toggleHabitCompletion(habitId, day) {
     if (!state.user) {
         alert("Você precisa estar logado para marcar hábitos.");
-        showAuthModal();
         return;
     }
 
@@ -404,7 +400,6 @@ async function toggleHabitCompletion(habitId, day) {
             [`completions.${monthKey}`]: completedDays
         });
         
-        // Atualiza o estado local APENAS SE a atualização no Firestore for bem-sucedida
         habit.completions = currentCompletions;
         renderHabits();
     } catch (error) {
@@ -440,7 +435,6 @@ function navigateToNextMonth() {
 function openHabitModal(habitId = null) {
     if (!state.user) {
         alert("Você precisa estar logado para adicionar ou editar hábitos.");
-        showAuthModal();
         return;
     }
     habitForm.reset();
@@ -489,7 +483,6 @@ async function handleHabitFormSubmit(e) {
     
     if (!state.user) {
         alert("Você precisa estar logado para adicionar ou editar hábitos.");
-        showAuthModal();
         return;
     }
 
@@ -518,7 +511,7 @@ async function handleHabitFormSubmit(e) {
                 name: habitName,
                 goal: habitGoal,
                 completions: {},
-                userId: state.user.uid // ASSOCIA O HÁBITO AO ID DO USUÁRIO
+                userId: state.user.uid
             };
             const docRef = await db.collection(HABITS_COLLECTION_NAME).add(newHabitData);
             state.habits.push({ id: docRef.id, ...newHabitData });
@@ -536,7 +529,6 @@ async function handleHabitFormSubmit(e) {
 function showDeleteConfirmation() {
     if (!state.user) {
         alert("Você precisa estar logado para excluir hábitos.");
-        showAuthModal();
         return;
     }
     confirmModal.style.display = 'block';
@@ -557,7 +549,6 @@ async function deleteHabit() {
     if (!state.user) {
         alert("Você precisa estar logado para excluir hábitos.");
         closeConfirmModal();
-        showAuthModal();
         return;
     }
     if (state.deleteHabitId === null) return;
@@ -577,42 +568,22 @@ async function deleteHabit() {
     }
 }
 
-// --- Funções de Autenticação ---
-
-function showAuthModal() {
-    authModal.style.display = 'block';
-    authErrorMessage.textContent = ''; // Limpa mensagens de erro
-    authForm.reset();
-    // Ajusta visibilidade dos botões baseado no estado de login
-    if (state.user) {
-        loginBtn.style.display = 'none';
-        registerBtn.style.display = 'none';
-        logoutBtn.style.display = 'inline-block';
-    } else {
-        loginBtn.style.display = 'inline-block';
-        registerBtn.style.display = 'inline-block';
-        logoutBtn.style.display = 'none';
-    }
-}
-
-function closeAuthModal() {
-    authModal.style.display = 'none';
-}
+// --- Funções de Autenticação na Página Principal ---
 
 async function handleLogin(e) {
     e.preventDefault();
-    const email = authEmailInput.value;
-    const password = authPasswordInput.value;
-    authErrorMessage.textContent = '';
+    const email = authEmailInputMain.value;
+    const password = authPasswordInputMain.value;
+    authErrorMessageMain.textContent = '';
 
     if (!email || !password) {
-        authErrorMessage.textContent = 'Por favor, preencha todos os campos.';
+        authErrorMessageMain.textContent = 'Por favor, preencha todos os campos.';
         return;
     }
 
     try {
         await auth.signInWithEmailAndPassword(email, password);
-        closeAuthModal();
+        // onAuthStateChanged cuidará da transição da UI
     } catch (error) {
         console.error("Erro ao fazer login:", error);
         let message = 'Erro ao fazer login. Verifique seu e-mail e senha.';
@@ -623,28 +594,28 @@ async function handleLogin(e) {
         } else if (error.code === 'auth/invalid-email') {
             message = 'Formato de e-mail inválido.';
         }
-        authErrorMessage.textContent = message;
+        authErrorMessageMain.textContent = message;
     }
 }
 
 async function handleRegister(e) {
     e.preventDefault();
-    const email = authEmailInput.value;
-    const password = authPasswordInput.value;
-    authErrorMessage.textContent = '';
+    const email = authEmailInputMain.value;
+    const password = authPasswordInputMain.value;
+    authErrorMessageMain.textContent = '';
 
     if (!email || !password) {
-        authErrorMessage.textContent = 'Por favor, preencha todos os campos.';
+        authErrorMessageMain.textContent = 'Por favor, preencha todos os campos.';
         return;
     }
     if (password.length < 6) {
-        authErrorMessage.textContent = 'A senha deve ter pelo menos 6 caracteres.';
+        authErrorMessageMain.textContent = 'A senha deve ter pelo menos 6 caracteres.';
         return;
     }
 
     try {
         await auth.createUserWithEmailAndPassword(email, password);
-        closeAuthModal();
+        // onAuthStateChanged cuidará da transição da UI
     } catch (error) {
         console.error("Erro ao registrar:", error);
         let message = 'Erro ao registrar. Tente novamente.';
@@ -655,14 +626,14 @@ async function handleRegister(e) {
         } else if (error.code === 'auth/invalid-email') {
             message = 'Formato de e-mail inválido.';
         }
-        authErrorMessage.textContent = message;
+        authErrorMessageMain.textContent = message;
     }
 }
 
 async function handleLogout() {
     try {
         await auth.signOut();
-        closeAuthModal();
+        // onAuthStateChanged cuidará da transição da UI de volta para a tela de login
     } catch (error) {
         console.error("Erro ao fazer logout:", error);
         alert("Ocorreu um erro ao sair. Tente novamente.");
