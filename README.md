@@ -1,6 +1,6 @@
-# Dialy Habits 🗓️
+# Daily Habits 🗓️
 
-**Dialy Habits** é uma aplicação web simples para acompanhar e organizar seus hábitos diários. A proposta é ajudar no desenvolvimento pessoal por meio da criação de rotinas saudáveis e do monitoramento das tarefas concluídas diariamente.
+**Daily Habits** é uma aplicação web simples para acompanhar e organizar seus hábitos diários. A proposta é ajudar no desenvolvimento pessoal por meio da criação de rotinas saudáveis e do monitoramento das tarefas concluídas diariamente.
 
 ## 🌐 Acesse o Projeto
 
